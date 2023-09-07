@@ -1,0 +1,7 @@
+shiny
+tidyverse
+DT
+shinythemes
+bslib
+shinyChakraSlider
+shinyjs
