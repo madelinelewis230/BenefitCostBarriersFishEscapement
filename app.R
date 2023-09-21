@@ -50,10 +50,6 @@ ui <- fluidPage(
                      numericInput("length", "Spillway Length",
                   min = 0, max = 2000000000, value = 62),
       
-                  numericInput("gradecost", "Grading",
-                              min = 0, max = 15000000000000, value = 7000),
-                  
-     
       
      numericInput("mobcost", "Mobilization",
                 min = 0, max = 9000000000, value = 7000),
@@ -75,7 +71,7 @@ ui <- fluidPage(
       numericInput("engcost", "Engineering (cost per hour)",
                   min = 0, max = 2000000000, value = 80),
       
-      sliderInput("engtime", "Engineering time required",
+      numericInput("engtime", "Engineering time required",
       
                           min = 0, max = 20000000000, value = 91),
     #new
