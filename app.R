@@ -1,3 +1,4 @@
+
 library(shiny)
 
 library(tidyverse)
@@ -82,15 +83,17 @@ ui <- fluidPage(
     ("In this section, you will input values for on-going barrier costs. Barrier maintenance is an estimated cost of annula maintenance, which will be drawn from a uniform distribution each year (+/- 200).
      Repair probability controls the probability that a repair cost will be added to the barrier maintenance cost each year. If a repair is needed, a repair cost is drawn from a uniform distribution (+/- 200)."),
     hr(),
-      numericInput("maint", "Barrier Maintenance",
-                  min = 0, max = 8000000000, value = 250),
-      
+      numericInput("minmaint", "Barrier Maintenance (min)",
+                  min = 0, max = 8000000000, value = 200),
+    numericInput("maxmaint", "Barrier Maintenance (max)",
+                 min = 0, max = 8000000000, value = 300),
       sliderInput("repprob", "Repair Probability",
                   min = 0, max = 1, value = .6),
       
-      numericInput("repcost", "Repair Cost",
-                  min = 0, max = 18000000000000, value = 1000),
-      
+      numericInput("minrepcost", "Repair Cost (min)",
+                  min = 0, max = 18000000000000, value = 800),
+    numericInput("maxrepcost", "Repair Cost (max)",
+                 min = 0, max = 18000000000000, value = 1200),
     numericInput("ef", "Barrier Efficiency",
                 min = 0, max = 1, value = .99),
     hr(),
@@ -110,16 +113,16 @@ numericInput("numstock1", "Number Stocked (Species 1)", value = 300, min = 0, ma
 numericInput("pss1H", "Post Stocking Survival (high) (Species 1)", min = 0, max = 1, value = .35),
      numericInput("adsurv1L", "Adult Survival (low) (Species 1)", min = 0, max = 1, value = .73),
 numericInput("adsurv1H", "Adult Survival (high) (Species 1)", min = .0, max = 1, value = .93),
-      numericInput("ageesc1", 'First Age at Escapement (Species 1) ', min = 0, max = 50, value = 3),
+      numericInput("ageesc1", 'First Age at Escapement (Species 1) ', min = 1, max = 50, value = 3),
 hidden(
   tags$div(
-    id="age2", numericInput("ageesc2", 'Second Age at Escapement (Species 1) ', min = 0, max = 50, value = 4))),
+    id="age2", numericInput("ageesc2", 'Second Age at Escapement (Species 1) ', min = 1, max = 50, value = 4))),
 hidden(
   tags$div(
-    id="age3", numericInput("ageesc3", 'Third Age at Escapement (Species 1) ', min = 0, max = 50, value = 5))),
+    id="age3", numericInput("ageesc3", 'Third Age at Escapement (Species 1) ', min = 1, max = 50, value = 5))),
 hidden(
   tags$div(
-    id="age4", numericInput("ageesc4", 'Fourth Age at Escapement (Species 1) ', min = 0, max = 50, value = 6))),
+    id="age4", numericInput("ageesc4", 'Fourth Age at Escapement (Species 1) ', min = 1, max = 50, value = 6))),
 
       numericInput("escapement1L", "Escapement Rate (Species 1, Low End)", min = 0, max = 1, value = .18),
       numericInput("escapement1H", "Escapement Rate (Species 1, Upper End)", min = 0, max = 1, value = .54),
@@ -145,16 +148,16 @@ numericInput("adsurv2H", "Adult Survival (high) (Species 2)", min = 0, max = 1, 
 
 sliderInput("yrclass2", "Number of Year classes",
             min = 1, max = 4, value = 4),
-numericInput("ageescsp2a1", 'First Age at Escapement (Species 2) ', min = 0, max = 5000, value = 3),
+numericInput("ageescsp2a1", 'First Age at Escapement (Species 2) ', min = 1, max = 5000, value = 3),
 hidden(
   tags$div(
-    id="ages2",numericInput("ageescsp2a2", 'Second Age at Escapement (Species 2) ', min = 0, max = 10000, value = 4))),
+    id="ages2",numericInput("ageescsp2a2", 'Second Age at Escapement (Species 2) ', min = 1, max = 10000, value = 4))),
 hidden(
   tags$div(
-    id="ages3", numericInput("ageescsp2a3", 'Third Age at Escapement (Species 2) ', min = 0, max = 10000, value = 5))),
+    id="ages3", numericInput("ageescsp2a3", 'Third Age at Escapement (Species 2) ', min = 1, max = 10000, value = 5))),
 hidden(
   tags$div(
-    id="ages4", numericInput("ageescsp2a4", 'Fourth Age at Escapement (Species 2) ', min = 0, max = 10000, value = 6))),     
+    id="ages4", numericInput("ageescsp2a4", 'Fourth Age at Escapement (Species 2) ', min = 1, max = 10000, value = 6))),     
       numericInput("escapement2L", "Escapement Rates (Species 2, Low End)", min = 0, max = 1, value = .22),
       numericInput("escapement2H", "Escapement Rates (Species 2, Upper End)", min = 0, max = 1, value = .47)
 
@@ -172,6 +175,7 @@ hidden(
                  h5("Cost of Barrier vs. Escapement (2 species)"),
                  (plotOutput("PlotTwoSpecies")),
                  (dataTableOutput("TwoSpSum")),
+                 
                  (textOutput("esc23")),
                  downloadButton("downloadData", "Download Barrier Data"),
                  downloadButton("downloadData2", "Download Escapement Data"),
@@ -183,8 +187,9 @@ hidden(
                  (plotOutput("plotfinalsp1")),
                  p("Figure 2. Plot of cost scenario for species 1 only. The default settings reflect parameters based on adult Muskellunge in Brushy Creek Lake, IA. "),
                  (dataTableOutput("summarysp1")),
-                 (dataTableOutput('meansp1dt')),
                  (dataTableOutput('meansp1')),
+                 (dataTableOutput('meansp1dt')),
+              
                  hr(),
                  (textOutput("escsp1")),
                  hr(),
@@ -211,6 +216,31 @@ hidden(
                  #(dataTableOutput("esc2")),
                  #(textOutput('meansp1')),
                  #(textOutput('meansp2'))),
+        
+        tabPanel("Barrier Pictures",
+                 h5("Brushy Creek spillway before barrier installation"),
+                 (img(src='Brushy_Before.jpg',height="90%", width="90%" )),
+                 hr(),
+                 h5('Brushy Creek barrier during construction'),
+                 (img(src='Brushy_Construction.jpg',height="90%", width="90%" )),
+                 hr(),
+                 (img(src='Brushy_Construction_2.jpg',height="90%", width="90%" )),
+                 hr(),
+                 h5('Completed Brushy Creek barrier'),
+                 (img(src='Brushy_Barrier.jpg',height="90%", width="90%" )),
+                 hr(),
+                 h6('Photos from Ben Dodd / Iowa DNR')
+          
+                 ),
+        tabPanel("Instructions & Contact",
+                 hr(),
+                 ('For a comprehensive guide on how to use the application, please download the PDF below'),tags$br(),
+                 downloadButton("downloadData_HowTo", "Download instructions for application"),
+                 hr(),
+                 ('To download metadata for all raw downloads availible in the app, please click the download button below:'),tags$br(),
+                 downloadButton("downloadData_Meta", "Download metadata file"),
+                 hr(),
+                 'For further questions or comments about the application, please contact Madeline Lewis (mlewis2@iastate.edu) '),
         tabPanel("Model Inputs & Mechanics",
                  h5("Calcuating the cost of escapement"),
 
@@ -225,9 +255,9 @@ hidden(
            (img(src='eq3.png', width='100', height='30')),
            h5("Calcuating the cost of the barrier"),
            (img(src='BarrierModel.png', width='500', height='300')))
-        
-        
+
       )
+      
     )))
 
 
@@ -350,7 +380,7 @@ server <- function(input, output, session) {
   ef <- reactive({ef = c(rep(input$ef, input$nsim))})
   
   final2 <- reactive({
-    maintdata <- as.data.frame(replicate(input$years, ((runif(input$nsim, min=input$maint -50, max=input$maint+50)))))
+    maintdata <- as.data.frame(replicate(input$years, ((runif(input$nsim, min=input$minmaint, max=input$maxmaint)))))
 5
     
     maintdata$SimNum = c(seq(1,input$nsim, by=1))
@@ -369,7 +399,7 @@ server <- function(input, output, session) {
   
   
   repair2 <- reactive({
-    rep  <-  as.data.frame(replicate(input$years, ((runif(input$nsim, min=input$repcost -200, max=input$repcost+200))*(rbinom(input$nsim, 1, input$repprob)))))
+    rep  <-  as.data.frame(replicate(input$years, ((runif(input$nsim, min=input$minrepcost, max=input$maxrepcost))*(rbinom(input$nsim, 1, input$repprob)))))
     
     rep$SimNum = c(seq(1,input$nsim, by=1))
     
@@ -1231,7 +1261,7 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
     esc2 <- escapement2()
     twospec <-cbind(esc, esc2)
     twospec
-    two <- twospec %>%  mutate(totalcomb = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) %>% mutate('Total Escapement Cost for Both Species' = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)), totalsp1 = (total1+total2+total3+total4), totalsp2 = (totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% rename('Total for Species 1' = 'totalsp1', 'Total for Species 2' = 'totalsp2')
+    two <- twospec %>%  mutate(totalcomb = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) %>% mutate('Total Escapement Cost for Both Species' = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)), totalsp1 = (total1+total2+total3+total4), totalsp2 = (totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% rename('Total for Species 1' = 'totalsp1', 'Total for Species 2' = 'totalsp2') %>% select(-c( total2, total3, total4, totalsp2a2, totalsp2a3,totalsp2a3,totalcomb, totalsp2a4 )) %>% rename('totalcostPV1' = 'total1', 'totalcostsp2PV1' = 'totalsp2a1')
     round(two, digits = 2)
     
   })
@@ -1244,8 +1274,8 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
     esc <- escapement()
     
   
-    spec1 <- esc %>%  mutate(totalcomb = ((total1+total2+total3+total4))) %>% mutate('Total Escapement Cost for Species 1' = ((total1+total2+total3+total4)))
-    round(two, digits = 2)
+    spec1 <- esc %>%  mutate(totalcomb = ((total1+total2+total3+total4))) %>% mutate('Total Escapement Cost for Species 1' = ((total1+total2+total3+total4))) %>% select(-c( total2, total3, total4, totalcomb )) %>% rename('totalcostPV1' = 'total1')
+    round(spec1, digits = 2)
     
   })
   
@@ -1258,7 +1288,7 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
 
     esc2 <- escapement2()
    
-    two <- esc2 %>%  mutate(totalcomb = (totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% rename('Total for Species 2' = 'totalcomb')
+    two <- esc2 %>%  mutate(totalcomb = (totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% rename('Total for Species 2' = 'totalcomb') %>% select(-c( totalsp2a2, totalsp2a3,totalsp2a3, totalsp2a4 )) %>% rename( 'totalcostsp2PV1' = 'totalsp2a1')
     round(two, digits = 2)
     
   })
@@ -1399,8 +1429,8 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
                               'Mean Replacement Cost Per Year (Sp. 1, Age 4)'= meansp1a4,  'Min Replacement Cost Per Year (Sp. 1, Age 4)'= minsp1a4, 'Max Replacement Cost Per Year (Sp. 1, Age 4)'= maxsp1a4 )
     
     
-    
-    datatable(both2, options = list(dom = 't') )
+   both2 <- both2 %>% mutate(across(1:12, round, 2))
+  datatable(both2, options = list(dom = 't'))
 
   })
   #Table of number escaped for species 1
@@ -1426,11 +1456,13 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
     both2 <- cbind(meanspe1a1, minspe1a1, maxspe1a1, meanspe1a2, minspe1a2, maxspe1a2, meanspe1a3, minspe1a3, maxspe1a3,  meanspe1a4, minspe1a4, maxspe1a4)
 
     both2 <- as.data.frame(both2)
+    
     both2 <- both2 %>% rename('Mean Number Escaped Per Year (Sp. 1, Age 1)'= meanspe1a1, 'Min Number Escaped Per Year (Sp. 1, Age 1)'= minspe1a1, 'Max Number Escaped Per Year (Sp. 1, Age 1)'= maxspe1a1,
                               'Mean Number Escaped Per Year (Sp. 1, Age 2)'= meanspe1a2,  'Min Number Escaped Per Year (Sp. 1, Age 2)'= minspe1a2, 'Max Number Escaped Per Year (Sp. 1, Age 2)'= maxspe1a2,
                               'Mean Number Escaped Per Year (Sp. 1, Age 3)'= meanspe1a3,  'Min Number Escaped Per Year (Sp. 1, Age 3)'= minspe1a3, 'Max Number Escaped Per Year (Sp. 1, Age 3)'= maxspe1a3,
                               'Mean Number Escaped Per Year (Sp. 1, Age 4)'= meanspe1a4,  'Min Number Escaped Per Year (Sp. 1, Age 4)'= minspe1a4, 'Max Number Escaped Per Year (Sp. 1, Age 4)'= maxspe1a4 )
-    datatable(both2, options = list(dom = 't') )
+    both2 <- both2 %>% mutate(across(1:12, round, 2))
+    datatable(both2,  options = list(dom = 't') )
   })
   
   
@@ -1468,6 +1500,7 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
                               'Mean Replacement Cost Per Year (Sp. 2, Age 2)'= meansp2a2,  'Min Replacement Cost Per Year (Sp. 2, Age 2)'= minsp2a2, 'Max Replacement Cost Per Year (Sp. 2, Age 2)'= maxsp2a2,
                               'Mean Replacement Cost Per Year (Sp. 2, Age 3)'= meansp2a3,  'Min Replacement Cost Per Year (Sp. 2, Age 3)'= minsp2a3, 'Max Replacement Cost Per Year (Sp. 2, Age 3)'= maxsp2a3,
                               'Mean Replacement Cost Per Year (Sp. 2, Age 4)'= meansp2a4,  'Min Replacement Cost Per Year (Sp. 2, Age 4)'= minsp2a4, 'Max Replacement Cost Per Year (Sp. 2, Age 4)'= maxsp2a4 )
+    both2 <- both2 %>% mutate(across(1:12, round, 2))
     datatable(both2, options = list(dom = 't') )
   })
   
@@ -1500,7 +1533,8 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
                               'Mean Number Escaped Per Year (Sp. 2, Age 2)'= meanspe2a2,  'Min Number Escaped Per Year (Sp. 2, Age 2)'= minspe2a2, 'Max Number Escaped Per Year (Sp. 2, Age 2)'= maxspe2a2,
                               'Mean Number Escaped Per Year (Sp. 2, Age 3)'= meanspe2a3,  'Min Number Escaped Per Year (Sp. 2, Age 3)'= minspe2a3, 'Max Number Escaped Per Year (Sp. 2, Age 3)'= maxspe2a3,
                               'Mean Number Escaped Per Year (Sp. 2, Age 4)'= meanspe2a4,  'Min Number Escaped Per Year (Sp. 2, Age 4)'= minspe2a4, 'Max Number Escaped Per Year (Sp. 2, Age 4)'= maxspe2a4 )
-    datatable(both2, options = list(dom = 't') )
+    both2 <- both2 %>% mutate(across(1:12, round, 2))
+     datatable(both2, options = list(dom = 't') )
 
   })
   
@@ -1705,6 +1739,23 @@ The Barrier Cost Table and Escapement Cost Table tabs store and display results 
       write.csv(escsp2(), file, row.names = FALSE)
     }
   )
+  
+  
+  output$downloadData_HowTo <- downloadHandler(
+    filename = "BarrierApplicationUserGuide.pdf",
+    content = function(file) {
+      file.copy("www/HowTo.pdf", file)
+    }
+  )
+
+  output$downloadData_Meta <- downloadHandler(
+    filename = "BarrierApplicationMetadata.xlsx",
+    content = function(file) {
+      file.copy("www/BarrierApplicationMetadata.xlsx", file)
+    }
+  )
+
+  
   
   
   
