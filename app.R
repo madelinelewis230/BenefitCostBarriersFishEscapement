@@ -1742,7 +1742,7 @@ The Barrier Cost Table and Escapement Cost Table tabs store and display results 
   
   
   output$downloadData_HowTo <- downloadHandler(
-    filename = "BarrierApplicationUserGuide.pdf",
+    filename = "BarrierShinyApplicationUserGuide.pdf",
     content = function(file) {
       file.copy("www/HowTo.pdf", file)
     }
