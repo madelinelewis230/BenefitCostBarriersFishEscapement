@@ -24,7 +24,7 @@ ui <- fluidPage(
       
       
      
-      h5('Simulation Parameters'),
+      h5('Simulation Parameters Check'),
       
       hr(),
       sliderInput("years", "Years",
