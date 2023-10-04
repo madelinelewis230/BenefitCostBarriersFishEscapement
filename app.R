@@ -32,6 +32,8 @@ ui <- fluidPage(
      
       sliderInput("nsim", "Number of Simulations",
                   min = 10, max = 1000000, value = 10000),
+                       numericInput("DR", "Discount Rate (from 0 - 1, default = 2%)",
+                   min = 0, max = 1, value = .02),
       hr(),
       h5("Spillway Characteristics and Estimated Construction Costs"),
       ("This category is where you will input your barrier construction costs. If itemized estimates are availible for each category, you can change the ipnuts accordingly.
