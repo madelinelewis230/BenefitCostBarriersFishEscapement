@@ -27,7 +27,7 @@ ui <- fluidPage(
       h5('Simulation Parameters1'),
       
       hr(),
-      sliderInput("years", "Years",
+      sliderInput("years", "Years_1",
                   min = 1, max = 100, value = 10),
      
       sliderInput("nsim", "Number of Simulations",
