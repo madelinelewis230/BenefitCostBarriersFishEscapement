@@ -15,7 +15,7 @@ CRF <- 0.111326528
 
 
 ui <- fluidPage(
-  tags$head(includeScript("google-analytics.js")),
+  tags$head(includeScript("www/google-analytics.js")),
   useShinyjs(),
   theme = bs_theme(version = 4, bootswatch = "lux"),
 
