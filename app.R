@@ -16,7 +16,7 @@ CRF <- 0.111326528
 
 ui <- fluidPage(
   useShinyjs(),
-  tags$head(includeScript("www/google-analytics.js")),
+  tags$head(includeScript("www/google-analytics.html")),
   theme = bs_theme(version = 4, bootswatch = "lux"),
   sidebarLayout(
     sidebarPanel( style = "overflow-y:scroll;position:relative;max-height:1200px",
