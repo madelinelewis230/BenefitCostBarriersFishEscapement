@@ -1,10 +1,3 @@
-
-library(shiny)
-
-library(tidyverse)
-
-library(DT)
-library(shinythemes)
 library(bslib)
 library(shinyChakraSlider)
 library(shinyjs)
@@ -15,24 +8,26 @@ CRF <- 0.111326528
 
 
 ui <- fluidPage(
+  tags$head(includeHTML(("www/google-tag3.Rhtml"))),
   useShinyjs(),
-  tags$head(includeScript("www/google-analytics.html")),
   theme = bs_theme(version = 4, bootswatch = "lux"),
+ 
   sidebarLayout(
     sidebarPanel( style = "overflow-y:scroll;position:relative;max-height:1200px",
   
       
       
      
-      h5('Simulation Parameters1'),
+      h5('Simulation Parameters'),
       
       hr(),
-      sliderInput("years", "Years_1",
+      sliderInput("years", "Years",
                   min = 1, max = 100, value = 10),
      
       sliderInput("nsim", "Number of Simulations",
                   min = 10, max = 1000000, value = 10000),
-                       numericInput("DR", "Discount Rate (from 0 - 1, default = 2%)",
+      
+      numericInput("DR", "Discount Rate (from 0 - 1, default = 2%)",
                    min = 0, max = 1, value = .02),
       hr(),
       h5("Spillway Characteristics and Estimated Construction Costs"),
@@ -1100,7 +1095,7 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
     esc <- escapement()
     esc2 <- escapement2()
     twospec <-cbind(esc, esc2)
-    two <- twospec %>% mutate(totalcomb = (total1+total2+total3+(totalsp2a1+totalsp2a2+totalsp2a2+totalsp2a4))) %>% select(totalcomb)
+    two <- twospec %>% mutate(totalcomb = (total1+total2+total3+total4+(totalsp2a1+totalsp2a2+totalsp2a2+totalsp2a4))) %>% select(totalcomb)
     twoef <- cbind(ef, two)
     
    CostEf <- twoef %>% mutate(CostEff = (totalcomb * (1-ef))) %>% select(CostEff)
@@ -1150,7 +1145,7 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
     #cost1 <- cost3 %>% mutate(total4 = (total1+total2+total3), meanperyearesc = (meanperyearesc1+meanperyearesc2+meanperyearesc3)) %>% select(total4, meanperyearesc) %>% rename(total1 = total4)
     #cost1
     
-    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) %>% select(totalcomb)
+    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) %>% select(totalcomb)
     twoef <- cbind(ef, two)
     
     CostEf <- twoef %>% mutate(CostEff = (totalcomb * (1-ef))) %>% select(CostEff)
@@ -1162,7 +1157,7 @@ rc2 <- as.data.frame(repcost2, nrow=input$nsim, ncol=input$years)
     esc <- escapement()
     esc2 <- escapement2()
     twospec <-cbind(esc, esc2)
-    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) 
+    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4))) 
     
     #%>% rename('Total for Species 1 - age 1' = 'total1', 'Total for Species 1 - age 2' = 'total2', 'Total for Species 1 - age 3' = 'total3', 'Total for Species 2 - age 1' = 'totalsp2a1','Total for Species 2 - age 2' = 'totalsp2a3','Total for Species 2 - age 3' = 'totalsp2a3')
     esca <- two %>% mutate(scenario='No Barrier') %>% select(totalcomb, scenario)
@@ -1553,7 +1548,7 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
     #cost1 <- cost3 %>% mutate(total4 = (total1+total2+total3), meanperyearesc = (meanperyearesc1+meanperyearesc2+meanperyearesc3)) %>% select(total4, meanperyearesc) %>% rename(total1 = total4)
     #cost1
     
-    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3)+totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% select(totalcomb)
+    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3+total4)+totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)) %>% select(totalcomb)
     twoef <- cbind(ef, two)
     
     CostEf <- twoef %>% mutate(CostEff = (totalcomb * (1-ef))) %>% select(CostEff)
@@ -1565,7 +1560,7 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
     esc <- escapement()
     esc2 <- escapement2()
     twospec <-cbind(esc, esc2)
-    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)))
+    two <- twospec %>% mutate(totalcomb = ((total1+total2+total3+total4)+(totalsp2a1+totalsp2a2+totalsp2a3+totalsp2a4)))
     # %>% rename('Total for Species 1 - age 1' = 'total1', 'Total for Species 1 - age 2' = 'total2', 'Total for Species 1 - age 3' = 'total3', 'Total for Species 2' = 'totalsp2')
     esca <- two %>% mutate(scenario='No Barrier') %>% select(totalcomb, scenario)
     
@@ -1647,10 +1642,7 @@ print(paste('Probability of a positive net benefit (i.e., probability that barri
     
     
     
-    
-    
-    var <- cbind(maint, repair, upfront)
-    comb <- var %>% group_by(SimNum) %>% mutate(total = (repsumPV + mainsumPV+upfront), Scenario='Barrier') %>% select(total, Scenario)
+    comb <- var %>% group_by(SimNum) %>% mutate(total = (repsumPV + mainsumPV+upfront+CostEff), Scenario='Barrier') %>% select(total, Scenario)
     
     one<- escapement2()
     
@@ -1744,9 +1736,9 @@ The Barrier Cost Table and Escapement Cost Table tabs store and display results 
   
   
   output$downloadData_HowTo <- downloadHandler(
-    filename = "BarrierShinyApplicationUserGuide.pdf",
+    filename = "BarrierApplicationUserGuide.pdf",
     content = function(file) {
-      file.copy("www/HowToBarrierApp_S1.pdf", file)
+      file.copy("www/HowToFishBarrierApp.pdf", file)
     }
   )
 
