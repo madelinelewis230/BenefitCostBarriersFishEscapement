@@ -8,7 +8,7 @@ CRF <- 0.111326528
 
 
 ui <- fluidPage(
-  tags$head(includeHTML(("www/google-tag3.Rhtml"))),
+  tags$head(includeHTML(("www/google-tag4.Rhtml"))),
   useShinyjs(),
   theme = bs_theme(version = 4, bootswatch = "lux"),
  
@@ -21,7 +21,7 @@ ui <- fluidPage(
       h5('Simulation Parameters'),
       
       hr(),
-      sliderInput("years", "Years1",
+      sliderInput("years", "Years2",
                   min = 1, max = 100, value = 10),
      
       sliderInput("nsim", "Number of Simulations",
